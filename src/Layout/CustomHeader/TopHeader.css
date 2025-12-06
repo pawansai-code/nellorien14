@@ -1,0 +1,35 @@
+.top-header {
+  background-color: #0a3d95;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.top-header .container-fluid {
+  padding-left: 0;
+  padding-right: 10px;
+}
+
+.top-header-content {
+  padding-left: 0.5rem;
+}
+
+.top-header-content > div:last-child {
+  margin-left: auto;
+  padding-right: 0;
+}
+
+.top-header-icon {
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    font-size: 0.8rem;
+  }
+  
+  .top-header .d-flex {
+    flex-direction: column;
+    gap: 0.25rem !important;
+  }
+}
+

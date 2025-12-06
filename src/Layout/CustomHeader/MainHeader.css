@@ -1,0 +1,105 @@
+.main-header {
+  background-color: white;
+  color: white;
+}
+
+.main-header .container-fluid {
+  padding-left: 0;
+  padding-right: 10px;
+}
+
+.main-header-content {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.logo-site-container {
+  gap: 0.75rem;
+  margin-left: 0;
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.site-title {
+  font-size: 1.75rem;
+  margin: 0;
+  color: #2d5a87;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #2d5a87;
+  margin-top: 0.25rem;
+}
+
+.language-selector {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+  padding-right: 0;
+}
+
+.language-dropdown {
+  appearance: none;
+  background-color: transparent;
+  border: 1px solid #0d6efd;
+  border-radius: 4px;
+  color: #0d6efd;
+  padding: 0.5rem 2rem 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.language-dropdown:focus {
+  outline: none;
+  border-color: #0d6efd;
+}
+
+.language-dropdown option {
+  background-color: #2d496d;
+  color: white;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 0.75rem;
+  color: #0d6efd;
+} 
+
+@media (max-width: 768px) {
+  .site-title {
+    font-size: 1.25rem;
+  }
+  
+  .tagline {
+    font-size: 0.8rem;
+  }
+  
+  .logo-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .logo-icon {
+    font-size: 1.25rem;
+  }
+}
+

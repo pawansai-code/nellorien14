@@ -1,0 +1,49 @@
+import { FaGlobe, FaMapMarkerAlt, FaChevronDown } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLanguage } from '../../state/slices/appSlice';
+import './MainHeader.css';
+
+  const MainHeader = ({ siteName = 'NELLORIENS.IN', tagline = 'Explore, Discover, Connect' }) => {
+  const language = useSelector((state) => state.app.language);
+  const dispatch = useDispatch();
+
+  const handleLanguageChange = (e) => {
+    dispatch(setLanguage(e.target.value));
+  };
+
+  return (
+    <div className="main-header">
+      <div className="container-fluid">
+        <div className="d-flex justify-content-between align-items-center py-3 main-header-content">
+          <div className="d-flex align-items-center logo-site-container">
+            <div className="logo-circle">
+              <FaGlobe className="logo-icon" />
+            </div>
+            <div>
+              <h1 className="site-title">{siteName}</h1>
+              <div className="d-flex align-items-center gap-2 tagline">
+                <FaMapMarkerAlt />
+                <span>{tagline}</span>
+              </div>
+            </div>
+          </div>
+          <div className="language-selector">
+            <select 
+              value={language} 
+              onChange={handleLanguageChange}
+              className="language-dropdown"
+            >
+              <option value="English">English</option>
+              <option value="Telugu">Telugu</option>
+              <option value="Hindi">Hindi</option>
+            </select>
+            <FaChevronDown className="dropdown-arrow" />
+          </div>
+        </div>
+        </div>
+    </div>
+  );
+};
+
+export default MainHeader;
+

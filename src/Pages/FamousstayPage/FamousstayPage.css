@@ -1,0 +1,693 @@
+.famousstay-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+.famousstay-main {
+  flex: 1;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+/* Hero Section */
+.famousstay-hero {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.famousstay-hero-banner {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=1200') center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.famousstay-hero-content {
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 2rem;
+  text-align: center;
+  color: white;
+  z-index: 1;
+}
+
+.famousstay-hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.famousstay-hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.famousstay-search-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.famousstay-search-bar {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.famousstay-search-bar i {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.famousstay-search-bar input {
+  width: 100%;
+  padding: 0.875rem 1.25rem 0.875rem 3.5rem;
+  border: none;
+  border-radius: 50px;
+  background-color: white;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.famousstay-search-bar input:focus {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.famousstay-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background-color: white;
+  color: #212529;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.famousstay-filter-btn:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.famousstay-filter-btn i {
+  font-size: 1rem;
+}
+
+.famousstay-map-btn {
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #0B66D1;
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+  transition: all 0.3s ease;
+}
+
+.famousstay-map-btn:hover {
+  background-color: #00B8FF;
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Content Wrapper */
+.famousstay-content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.famousstay-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* Section Headers */
+.famousstay-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.famousstay-section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.famousstay-editor-label {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: #fff3cd;
+  color: #856404;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.75rem;
+}
+
+/* Top Picks Section */
+.famousstay-stays-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.famousstay-stay-card {
+  background-color: white;
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.famousstay-stay-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.famousstay-stay-image {
+  position: relative;
+  width: 300px;
+  height: 220px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.famousstay-stay-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.famousstay-stay-card:hover .famousstay-stay-image img {
+  transform: scale(1.05);
+}
+
+.famousstay-editor-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.375rem 0.75rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #856404;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.famousstay-stay-body {
+  padding: 1.25rem;
+    flex: 1;
+
+}
+
+.famousstay-stay-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.famousstay-stay-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  flex: 1;
+}
+
+.famousstay-stay-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffc107;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.famousstay-stay-rating i {
+  font-size: 1rem;
+}
+
+.famousstay-stay-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.famousstay-stay-location i {
+  color: #0d6efd;
+}
+
+.famousstay-stay-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0d6efd;
+  margin-bottom: 0.75rem;
+}
+
+.famousstay-stay-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.famousstay-amenity-tag {
+  padding: 0.25rem 0.75rem;
+  background-color: #f8f9fa;
+  color: #495057;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.famousstay-stay-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.famousstay-action-btn {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-action-primary {
+  background-color: #0B66D1;
+  color: white;
+}
+
+.famousstay-action-primary:hover {
+  background-color: #00B8FF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+}
+
+.famousstay-action-secondary {
+  background-color: #f8f9fa;
+  color: #212529;
+  border: 1px solid #dee2e6;
+}
+
+.famousstay-action-secondary:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+/* Map Section */
+.famousstay-map-section {
+  margin-top: 2rem;
+}
+
+.famousstay-explore-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #0B66D1;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-explore-btn:hover {
+  background-color: #00B8FF;
+  transform: translateY(-1px);
+}
+
+.famousstay-map-container {
+  width: 100%;
+  height: 400px;
+  border-radius: 50px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+}
+
+.famousstay-map-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.famousstay-map-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #adb5bd;
+}
+
+.famousstay-nearby-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.famousstay-nearby-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.famousstay-nearby-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.famousstay-nearby-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 50px;
+  background-color: white;
+  color: #495057;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-nearby-btn:hover {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.famousstay-nearby-btn.active {
+  background-color: #0B66D1;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.famousstay-refine-btn {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 50px;
+  background-color: white;
+  color: #495057;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-refine-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* Sidebar */
+.famousstay-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.famousstay-sidebar-section {
+  background-color: white;
+  border-radius: 50px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.famousstay-sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 1.25rem;
+}
+
+/* Quick Filters */
+.famousstay-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.famousstay-filter-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-filter-chip:hover {
+  border-color: #00B8FF;
+  color: #0d6efd;
+}
+
+.famousstay-filter-chip.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.famousstay-filter-chip i {
+  font-size: 0.9rem;
+}
+
+/* Nearby Foods */
+.famousstay-foods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.famousstay-food-item {
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 50px;
+}
+
+.famousstay-food-item:hover {
+  background-color: #f8f9fa;
+}
+
+.famousstay-food-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.famousstay-food-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.famousstay-food-content {
+  flex: 1;
+}
+
+.famousstay-food-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.famousstay-food-desc {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.famousstay-food-label {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.famousstay-food-label.popular {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.famousstay-food-label.hot {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Common Ads */
+.famousstay-ads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.famousstay-ad-card {
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.famousstay-ad-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.famousstay-ad-image {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+}
+
+.famousstay-ad-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.famousstay-ad-content {
+  padding: 1rem;
+  background-color: white;
+}
+
+.famousstay-ad-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.75rem;
+}
+
+.famousstay-ad-btn {
+  width: 100%;
+  padding: 0.625rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #0B66D1;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.famousstay-ad-btn:hover {
+  background-color: #00B8FF;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .famousstay-content-wrapper {
+    grid-template-columns: 1fr 300px;
+  }
+}
+
+@media (max-width: 992px) {
+  .famousstay-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .famousstay-sidebar {
+    order: -1;
+  }
+
+  .famousstay-stays-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .famousstay-hero-title {
+    font-size: 2rem;
+  }
+
+  .famousstay-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .famousstay-search-controls {
+    flex-direction: column;
+  }
+
+  .famousstay-search-bar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .famousstay-stays-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .famousstay-filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
