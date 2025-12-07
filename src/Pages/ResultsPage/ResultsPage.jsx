@@ -3,14 +3,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CommonPageLayout from "../../components/CommonPageLayout";
+import useTranslation from "../../hooks/useTranslation";
 import {
-  setResultsLoading,
-  setResultsPage,
+    setResultsLoading,
+    setResultsPage,
 } from "../../state/slices/resultsSlice";
 import "./ResultsPage.css";
 
 const ResultsPage = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const {
     resultsList,
     resultsFilters,
@@ -117,15 +119,14 @@ const ResultsPage = () => {
   // Find Section Left
   const findSectionLeft = (
     <>
-      <h2 className="results-find-title">Find your result fast</h2>
+      <h2 className="results-find-title">{t('FindResultFast')}</h2>
       <p className="results-find-instructions">
-        Use filters below to jump to your board, exam and session. Download
-        official PDFs or view scorecards.
+        {t('ResultInstructions')}
       </p>
       <div className="results-alert-box">
         <i className="bi bi-exclamation-triangle"></i>
         <span>
-          High traffic expected during releases. Try again if pages load slowly.
+          {t('HighTrafficAlert')}
         </span>
       </div>
     </>
@@ -134,12 +135,12 @@ const ResultsPage = () => {
   // Find Section Right
   const findSectionRight = (
     <div className="results-quick-actions-panel">
-      <h4 className="results-sidebar-title">Quick Actions</h4>
+      <h4 className="results-sidebar-title">{t('QuickActions')}</h4>
       <div className="results-roll-input">
         <span className="results-roll-prefix">#</span>
         <input
           type="text"
-          placeholder="Enter Roll Number"
+          placeholder={t('EnterRollNumber')}
           value={rollNumber}
           onChange={(e) => setRollNumber(e.target.value)}
         />
@@ -147,11 +148,11 @@ const ResultsPage = () => {
       <div className="results-action-buttons">
         <button className="results-check-btn" onClick={handleCheckResult}>
           <i className="bi bi-search me-2"></i>
-          Check Result
+          {t('CheckResult')}
         </button>
         <button className="results-download-btn">
           <i className="bi bi-download me-2"></i>
-          Download Scorecard
+          {t('DownloadScorecard')}
         </button>
       </div>
     </div>
@@ -161,20 +162,20 @@ const ResultsPage = () => {
   const filtersRow = (
     <>
       <div className="results-filter-dropdown">
-        <label>Category:</label>
+        <label>{t('Categories')}:</label>
         <select
           value={filters.category}
           onChange={(e) => handleFilterUpdate("category", e.target.value)}
         >
-          <option value="All">All</option>
-          <option value="Schools">Schools</option>
-          <option value="Universities">Universities</option>
-          <option value="Govt Exams">Govt Exams</option>
-          <option value="Medical">Medical</option>
+          <option value="All">{t('All')}</option>
+          <option value="Schools">{t('Schools')}</option>
+          <option value="Universities">{t('Universities')}</option>
+          <option value="Govt Exams">{t('GovtExams')}</option>
+          <option value="Medical">{t('Medical')}</option>
         </select>
       </div>
       <div className="results-filter-dropdown">
-        <label>Board/Body:</label>
+        <label>{t('BoardBody')}:</label>
         <select
           value={filters.board}
           onChange={(e) => handleFilterUpdate("board", e.target.value)}
@@ -186,7 +187,7 @@ const ResultsPage = () => {
         </select>
       </div>
       <div className="results-filter-dropdown">
-        <label>Session:</label>
+        <label>{t('Session')}:</label>
         <select
           value={filters.session}
           onChange={(e) => handleFilterUpdate("session", e.target.value)}
@@ -197,13 +198,13 @@ const ResultsPage = () => {
         </select>
       </div>
       <div className="results-filter-dropdown">
-        <label>Sort:</label>
+        <label>{t('Sort')}:</label>
         <select
           value={filters.sort}
           onChange={(e) => handleFilterUpdate("sort", e.target.value)}
         >
-          <option value="Recent">Recent</option>
-          <option value="Alphabetical">Alphabetical</option>
+          <option value="Recent">{t('Recent')}</option>
+          <option value="Alphabetical">{t('Alphabetical')}</option>
         </select>
       </div>
     </>
@@ -226,7 +227,7 @@ const ResultsPage = () => {
           </div>
           {result.passPercentage && (
             <div className="result-pass-badge">
-              Pass %: {result.passPercentage}
+              {t('PassPercentage')}: {result.passPercentage}
             </div>
           )}
           <p className="result-card-description">{result.description}</p>
@@ -241,7 +242,7 @@ const ResultsPage = () => {
                 }`}
                 onClick={() => handleResultAction(result, action)}
               >
-                {action}
+                {t(action) || action}
               </button>
             ))}
           </div>
@@ -256,16 +257,16 @@ const ResultsPage = () => {
       {/* result tools section */}
       <div className="results-sidebar-section">
         <div className="results-sidebar-header">
-          <h4 className="results-sidebar-title">Result Tools</h4>
+          <h4 className="results-sidebar-title">{t('ResultTools')}</h4>
           <a href="#" className="results-sidebar-link">
-            Utilities
+            {t('Utilities')}
           </a>
         </div>
         <div className="results-tools-list">
           {resultTools.map((tool) => (
             <div key={tool.id} className="results-tool-item">
               <i className={`bi ${tool.icon}`}></i>
-              <span>{tool.label}</span>
+              <span>{t(tool.label) || tool.label}</span>
             </div>
           ))}
         </div>
@@ -274,16 +275,16 @@ const ResultsPage = () => {
       {/* important links section */}
       <div className="results-sidebar-section">
         <div className="results-sidebar-header">
-          <h4 className="results-sidebar-title">Important Links</h4>
+          <h4 className="results-sidebar-title">{t('ImportantLinks')}</h4>
           <a href="#" className="results-sidebar-link">
-            Boards
+            {t('Boards')}
           </a>
         </div>
         <div className="results-links-list">
           {importantLinks.map((link) => (
             <a key={link.id} href={link.url} className="results-link-item">
               <i className="bi bi-box-arrow-up-right"></i>
-              <span>{link.label}</span>
+              <span>{t(link.label) || link.label}</span>
             </a>
           ))}
         </div>
@@ -292,9 +293,9 @@ const ResultsPage = () => {
       {/* recently viewed section */}
       <div className="results-sidebar-section">
         <div className="results-sidebar-header">
-          <h4 className="results-sidebar-title">Recently Viewed</h4>
+          <h4 className="results-sidebar-title">{t('RecentlyViewed')}</h4>
           <a href="#" className="results-sidebar-link">
-            You
+            {t('You')}
           </a>
         </div>
         <div className="results-recent-list">
@@ -313,12 +314,12 @@ const ResultsPage = () => {
   const pagination = (
     <>
       <span className="results-pagination-status">
-        Page {resultsPage.currentPage} of {resultsPage.totalPages}
+        {t('Page')} {resultsPage.currentPage} {t('Of')} {resultsPage.totalPages}
       </span>
       <div className="results-pagination-controls">
         {resultsPage.isLoading ? (
           <>
-            <span className="results-loading-text">Loading more...</span>
+            <span className="results-loading-text">{t('LoadingMore')}</span>
             <span
               className="spinner-border spinner-border-sm ms-2"
               role="status"
@@ -327,14 +328,14 @@ const ResultsPage = () => {
           </>
         ) : (
           <>
-            <span className="results-loading-text">Loading more...</span>
+            <span className="results-loading-text">{t('LoadingMore')}</span>
             <button
               className="results-load-more-btn"
               onClick={handleLoadMore}
               disabled={resultsPage.currentPage >= resultsPage.totalPages}
             >
               <i className="bi bi-arrow-repeat me-2"></i>
-              Load More
+              {t('LoadMore')}
             </button>
           </>
         )}
@@ -342,17 +343,22 @@ const ResultsPage = () => {
     </>
   );
 
+  const localizedFilters = resultsFilters.map(f => ({
+      ...f,
+      label: t(f.label) || f.label
+  }));
+
   return (
     <CommonPageLayout
-      pageTitle="Results"
+      pageTitle={t('Results')}
       pageIcon="bi bi-mortarboard"
-      pageSubtitle="Exam results, merit lists, scorecards, and revaluation updates."
-      filterTabs={resultsFilters}
+      pageSubtitle={t('ResultsSubtitle')}
+      filterTabs={localizedFilters}
       activeFilter={activeFilter}
       onFilterChange={handleFilterChange}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
-      searchPlaceholder="Search results, roll no, exam"
+      searchPlaceholder={t('SearchResults')}
       includeSearch={true}
       findSectionLeft={findSectionLeft}
       findSectionRight={findSectionRight}
@@ -360,7 +366,7 @@ const ResultsPage = () => {
       mainContent={mainContent}
       sidebarContent={sidebarContent}
       pagination={pagination}
-      footerTagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+      footerTagline={t('FooterTagline')}
       includeNavbarSearch={false}
       className="results-page"
       mainClassName="results-page-main"

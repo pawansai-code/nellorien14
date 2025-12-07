@@ -1,16 +1,18 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import TopHeader from '../../components/TopHeader';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Footer from '../../components/Footer';
 import MainHeader from '../../components/MainHeader';
 import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import TopHeader from '../../components/TopHeader';
+import useTranslation from '../../hooks/useTranslation';
 import './NewsFeed.css';
 
 const NewsFeed = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { newsFeedArticles, newsFeedFilters } = useSelector((state) => ({
     newsFeedArticles: state.news.newsFeedArticles,
     newsFeedFilters: state.news.newsFeedFilters,
@@ -61,8 +63,8 @@ const NewsFeed = () => {
     <div className="news-feed-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -75,8 +77,8 @@ const NewsFeed = () => {
                   <i className="bi bi-newspaper"></i>
                 </span>
                 <div>
-                  <p className="news-feed-title-label">News</p>
-                  <h2 className="news-feed-title-heading">Latest updates today</h2>
+                  <p className="news-feed-title-label">{t('News')}</p>
+                  <h2 className="news-feed-title-heading">{t('LatestUpdatesToday')}</h2>
                 </div>
               </div>
               <div className="news-feed-controls">
@@ -90,7 +92,7 @@ const NewsFeed = () => {
                       onClick={() => handleFilterChange(tab.id)}
                     >
                       <i className={`bi ${tab.icon} me-2`}></i>
-                      {tab.label}
+                      {t(tab.label)}
                     </button>
                   ))}
                 </div>
@@ -100,7 +102,7 @@ const NewsFeed = () => {
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search articles"
+                    placeholder={t('SearchArticles')}
                   />
                 </div>
               </div>
@@ -115,13 +117,13 @@ const NewsFeed = () => {
                   <div className="news-feed-card-body">
                     <h5>{article.title}</h5>
                     <p className="news-feed-card-meta">
-                      {article.categoryLabel} - {article.time}
+                      {t(article.categoryLabel)} - {article.time}
                     </p>
                     <button
                       className="news-feed-card-btn"
                       onClick={() => handleReadFullArticle(article)}
                     >
-                      Read Full Article
+                      {t('ReadFullArticle')}
                     </button>
                   </div>
                 </div>
@@ -129,7 +131,7 @@ const NewsFeed = () => {
               {!filteredArticles.length && (
                 <div className="news-feed-empty-state">
                   <i className="bi bi-emoji-neutral"></i>
-                  <p>No news matches your search.</p>
+                  <p>{t('NoNewsMatches')}</p>
                 </div>
               )}
             </div>
@@ -139,7 +141,7 @@ const NewsFeed = () => {
             <div className="news-feed-pagination-panel">
               <div className="news-pagination-controls-group">
                 <span className="news-pagination-status-chip">
-                  Page {currentPage} of {totalPages}
+                  {t('Page')} {currentPage} {t('Of')} {totalPages}
                 </span>
                 <div className="news-pagination-controls">
                   <button
@@ -168,7 +170,7 @@ const NewsFeed = () => {
                     onClick={handleNextPage}
                     disabled={currentPage >= totalPages || isLoadingMore}
                   >
-                    Next
+                    {t('Next')}
                   </button>
                 </div>
               </div>
@@ -180,12 +182,12 @@ const NewsFeed = () => {
                       role="status"
                       aria-hidden="true"
                     ></span>
-                    Loading more...
+                    {t('LoadingMore')}
                   </>
                 ) : (
                   <>
                     <i className="bi bi-arrow-repeat me-2"></i>
-                    Ready
+                    {t('Ready')}
                   </>
                 )}
               </div>
@@ -195,12 +197,11 @@ const NewsFeed = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );
 };
 
 export default NewsFeed;
-

@@ -6,15 +6,17 @@ import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import useTranslation from "../../hooks/useTranslation";
 import {
-  resetSportsFilters,
-  setSportsCategory,
-  setSportsRegion,
+    resetSportsFilters,
+    setSportsCategory,
+    setSportsRegion,
 } from "../../state/slices/sportsSlice";
 import "./SportsPage.css";
 
 const SportsPage = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const {
     heroImage,
     categories,
@@ -93,8 +95,8 @@ const SportsPage = () => {
     <div className="sports-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -110,7 +112,7 @@ const SportsPage = () => {
                     <i className="bi bi-search"></i>
                     <input
                       type="text"
-                      placeholder="Search teams, tournaments..."
+                      placeholder={t('SearchTeams')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -123,7 +125,7 @@ const SportsPage = () => {
                     >
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.label}>
-                          Category: {cat.label}
+                          {t('Categories')}: {t(cat.label)}
                         </option>
                       ))}
                     </select>
@@ -136,7 +138,7 @@ const SportsPage = () => {
                     >
                       {regions.map((region) => (
                         <option key={region.id} value={region.label}>
-                          Region: {region.label}
+                          {t('Region')}: {t(region.label)}
                         </option>
                       ))}
                     </select>
@@ -144,7 +146,7 @@ const SportsPage = () => {
                 </div>
                 <div className="sports-time-indicator">
                   <i className="bi bi-calendar3"></i>
-                  <span>This Week</span>
+                  <span>{t('ThisWeek')}</span>
                 </div>
               </section>
 
@@ -157,14 +159,13 @@ const SportsPage = () => {
                   <div className="sports-hero-overlay">
                     <button className="sports-hub-btn">
                       <i className="bi bi-trophy"></i>
-                      Sports Hub
+                      {t('SportsHub')}
                     </button>
                     <h1 className="sports-hero-title">
-                      Scores, Fixtures, and Local Sports Updates
+                      {t('SportsTagline')}
                     </h1>
                     <p className="sports-hero-subtitle">
-                      Cricket, Volleyball, Kabaddi, Athletics and more across
-                      Nellore & beyond.
+                      {t('SportsSubtitle')}
                     </p>
                   </div>
                 </div>
@@ -217,9 +218,9 @@ const SportsPage = () => {
               {/* Live Scores Section */}
               <section className="sports-section">
                 <div className="sports-section-header">
-                  <h2 className="sports-section-title">Live Scores</h2>
+                  <h2 className="sports-section-title">{t('LiveScores')}</h2>
                   <button className="sports-section-action-btn">
-                    Updating
+                    {t('Updating')}
                   </button>
                 </div>
                 <div className="sports-live-scores-list">
@@ -229,7 +230,7 @@ const SportsPage = () => {
                         <h3 className="sports-score-match">{score.match}</h3>
                         <div className="sports-score-details">
                           <span className="sports-score-sport">
-                            {score.sport}
+                            {t(score.sport) || score.sport}
                           </span>
                           <span className="sports-score-score">
                             {score.score}
@@ -239,7 +240,7 @@ const SportsPage = () => {
                       <span
                         className={`sports-score-badge ${score.type.toLowerCase()}`}
                       >
-                        {score.type}
+                        {t(score.type) || score.type}
                       </span>
                     </div>
                   ))}
@@ -249,9 +250,9 @@ const SportsPage = () => {
               {/* Upcoming Fixtures Section */}
               <section className="sports-section">
                 <div className="sports-section-header">
-                  <h2 className="sports-section-title">Upcoming Fixtures</h2>
+                  <h2 className="sports-section-title">{t('UpcomingFixtures')}</h2>
                   <button className="sports-section-action-btn">
-                    This Week
+                    {t('ThisWeek')}
                   </button>
                 </div>
                 <div className="sports-fixtures-grid">
@@ -260,11 +261,11 @@ const SportsPage = () => {
                       <h4 className="sports-fixture-title">{fixture.title}</h4>
                       <div className="sports-fixture-details">
                         <span className="sports-fixture-date">
-                          {fixture.date} - {fixture.location} - {fixture.time}
+                          {fixture.date} - {t(fixture.location) || fixture.location} - {fixture.time}
                         </span>
                       </div>
                       <span className="sports-fixture-category">
-                        {fixture.category}
+                        {t(fixture.category) || fixture.category}
                       </span>
                     </div>
                   ))}
@@ -274,9 +275,9 @@ const SportsPage = () => {
               {/* Sports News Section */}
               <section className="sports-section">
                 <div className="sports-section-header">
-                  <h2 className="sports-section-title">Sports News</h2>
+                  <h2 className="sports-section-title">{t('SportsNews')}</h2>
                   <button className="sports-section-action-btn">
-                    Local & National
+                    {t('LocalNational')}
                   </button>
                 </div>
                 <div className="sports-news-grid">
@@ -287,7 +288,7 @@ const SportsPage = () => {
                         <span className="sports-news-posted">
                           {news.posted}
                         </span>
-                        <span className="sports-news-tag">{news.tag}</span>
+                        <span className="sports-news-tag">{t(news.tag) || news.tag}</span>
                       </div>
                     </div>
                   ))}
@@ -300,7 +301,7 @@ const SportsPage = () => {
 
 
               <section className="sports-sidebar-section">
-                <h3 className="sports-sidebar-title">News Lines</h3>
+                <h3 className="sports-sidebar-title">{t('NewsLines')}</h3>
                 <div className="sports-news-lines-list">
                   {newsLines.map((line) => (
                     <div key={line.id} className="sports-news-line-item">
@@ -313,7 +314,7 @@ const SportsPage = () => {
 
               <section className="sports-sidebar-section">
                 <h3 className="sports-sidebar-title">
-                  Standings - {standings.league}
+                  {t('Standings')} - {standings.league}
                 </h3>
                 <div className="sports-standings-list">
                   {standings.teams.map((team, index) => (
@@ -324,7 +325,7 @@ const SportsPage = () => {
                           {team.name}
                         </span>
                         <span className="sports-standing-stats">
-                          P{team.played}, Pts {team.points}
+                          {t('P')}{team.played}, {t('Pts')} {team.points}
                         </span>
                       </div>
                     </div>
@@ -355,8 +356,8 @@ const SportsPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

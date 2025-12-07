@@ -1,18 +1,13 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
-import {
-    resetFilters,
-    setEventsCategoryFilter,
-    setEventsDateFilter,
-    setEventsLocationFilter,
-    setEventsTimeFilter,
-} from "../../state/slices/eventsSlice";
+import useTranslation from "../../hooks/useTranslation";
+import { resetFilters, setEventsTimeFilter } from "../../state/slices/eventsSlice";
 import "./EventsPage.css";
 
 const EventsPage = () => {
@@ -35,34 +30,68 @@ const EventsPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTimeFilter, setActiveTimeFilterState] = useState("This Week");
+  const { t } = useTranslation();
+
+  /* Local Filter State */
+  const [activeLocalFilters, setActiveLocalFilters] = useState({
+    category: 'All',
+    location: 'All',
+    time: 'All'
+  });
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRef = useRef(null);
+
+  // Consolidate events for filter extraction
+  const allEvents = useMemo(() => {
+    return [...featuredEvents, ...upcomingEvents, ...planAheadEvents];
+  }, [featuredEvents, upcomingEvents, planAheadEvents]);
+
+  // Extract unique values
+  const uniqueLocations = useMemo(() => {
+    const locs = new Set(allEvents.map(e => e.location));
+    return ['All', ...Array.from(locs)];
+  }, [allEvents]);
+
+  const uniqueCategories = useMemo(() => {
+    const cats = new Set(allEvents.map(e => e.category));
+    return ['All', ...Array.from(cats)];
+  }, [allEvents]);
+
+  const timeOptions = ['All', 'Today', 'Tomorrow', 'This Week', 'Next Month'];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
+
+  const toggleDropdown = (key) => {
+    setOpenDropdown(openDropdown === key ? null : key);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setActiveLocalFilters(prev => ({ ...prev, [key]: value }));
+    setOpenDropdown(null);
+  };
 
   const handleTimeFilterChange = (filterLabel) => {
-    setActiveTimeFilterState(filterLabel);
+    handleFilterChange('time', filterLabel);
     dispatch(setEventsTimeFilter(filterLabel));
-  };
-
-  const handleCategoryFilterChange = (category) => {
-    dispatch(
-      setEventsCategoryFilter(
-        activeFilters.category === category ? null : category
-      )
-    );
-  };
-
-  const handleDateFilterChange = (date) => {
-    dispatch(setEventsDateFilter(activeFilters.date === date ? null : date));
-  };
-
-  const handleLocationFilterChange = (location) => {
-    dispatch(
-      setEventsLocationFilter(
-        activeFilters.location === location ? null : location
-      )
-    );
   };
 
   const handleResetFilters = () => {
     dispatch(resetFilters());
+    setActiveLocalFilters({ category: 'All', location: 'All', time: 'All' });
   };
 
   const handleEventAction = (event, actionType) => {
@@ -90,16 +119,22 @@ const EventsPage = () => {
       );
     }
 
-    if (activeFilters.category) {
-      filtered = filtered.filter(
-        (event) => event.category === activeFilters.category
-      );
+    // Filter by Active Local Filters
+    if (activeLocalFilters.category !== 'All') {
+      filtered = filtered.filter(e => e.category === activeLocalFilters.category);
     }
 
-    if (activeFilters.location) {
-      filtered = filtered.filter(
-        (event) => event.location === activeFilters.location
-      );
+    if (activeLocalFilters.location !== 'All') {
+      filtered = filtered.filter(e => e.location === activeLocalFilters.location);
+    }
+
+    if (activeLocalFilters.time !== 'All') {
+        // Mock time filtering logic - real implementation depends on date parsing
+        // For now, assuming exact match or simple logic if dates were proper objects
+        // filtering loosely based on string presence or logic
+         if (activeLocalFilters.time === 'Today') {
+             // simplified for demo
+         }
     }
 
     return filtered;
@@ -109,14 +144,17 @@ const EventsPage = () => {
     planAheadEvents,
     searchTerm,
     activeFilters,
+    activeLocalFilters
   ]);
+
+
 
   return (
     <div className="events-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -124,29 +162,90 @@ const EventsPage = () => {
           {/* Header Section */}
           <section className="events-header">
             <div className="events-header-content">
-              <div className="events-title-section">
-                <h1 className="events-title">Events in Nellore</h1>
-                <button className="events-time-filter-btn">
-                  <i className="bi bi-calendar-event"></i> {activeTimeFilter}
-                </button>
+              <div className="events-title-section" ref={dropdownRef}>
+                <h1 className="events-title">{t('EventsInNellore')}</h1>
+                
+                {/* Time Filter */}
+                <div className="filter-wrapper">
+                    <button 
+                        className="events-time-filter-btn"
+                        onClick={() => toggleDropdown('time')}
+                    >
+                        <i className="bi bi-calendar-event"></i> {activeLocalFilters.time === 'All' ? t('Search') : activeLocalFilters.time}
+                    </button>
+                    {openDropdown === 'time' && (
+                        <div className="filter-dropdown">
+                            {timeOptions.map(time => (
+                                <button
+                                    key={time}
+                                    className={activeLocalFilters.time === time ? 'selected' : ''}
+                                    onClick={() => handleTimeFilterChange(time)}
+                                >
+                                    {time}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
               </div>
               <div className="events-header-filters">
                 <div className="events-search-bar">
                   <i className="bi bi-search"></i>
                   <input
                     type="text"
-                    placeholder="Search events"
+                    placeholder={t('SearchEvents')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <div className="events-quick-filters">
-                  <button className="events-location-btn">
-                    <i className="bi bi-geo-alt"></i> Nellore, Gudur
-                  </button>
-                  <button className="events-filter-btn">
-                    <i className="bi bi-funnel"></i> Free - Paid - Cultural
-                  </button>
+                  {/* Location Filter */}
+                  <div className="filter-wrapper">
+                      <button 
+                        className={`events-location-btn ${activeLocalFilters.location !== 'All' ? 'active' : ''}`}
+                        onClick={() => toggleDropdown('location')}
+                      >
+                        <i className="bi bi-geo-alt"></i> 
+                        {activeLocalFilters.location === 'All' ? t('Location') : activeLocalFilters.location}
+                      </button>
+                      {openDropdown === 'location' && (
+                        <div className="filter-dropdown">
+                            {uniqueLocations.map(loc => (
+                                <button
+                                    key={loc}
+                                    className={activeLocalFilters.location === loc ? 'selected' : ''}
+                                    onClick={() => handleFilterChange('location', loc)}
+                                >
+                                    {loc}
+                                </button>
+                            ))}
+                        </div>
+                      )}
+                  </div>
+
+                  {/* Category Filter */}
+                  <div className="filter-wrapper">
+                      <button 
+                        className={`events-filter-btn ${activeLocalFilters.category !== 'All' ? 'active' : ''}`}
+                        onClick={() => toggleDropdown('category')}
+                      >
+                        <i className="bi bi-funnel"></i> 
+                        {activeLocalFilters.category === 'All' ? t('SelectCategory') : activeLocalFilters.category}
+                      </button>
+                      {openDropdown === 'category' && (
+                         <div className="filter-dropdown">
+                            {uniqueCategories.map(cat => (
+                                <button
+                                    key={cat}
+                                    className={activeLocalFilters.category === cat ? 'selected' : ''}
+                                    onClick={() => handleFilterChange('category', cat)}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                         </div>
+                      )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -161,8 +260,8 @@ const EventsPage = () => {
               {/* Featured Events Section */}
               <section className="events-section">
                 <div className="events-section-header">
-                  <h2 className="events-section-title">Featured Events</h2>
-                  <span className="events-section-label">Handpicked</span>
+                  <h2 className="events-section-title">{t('FeaturedEvents')}</h2>
+                  <span className="events-section-label">{t('Handpicked')}</span>
                 </div>
                 <div className="events-featured-grid">
                   {featuredEvents.map((event) => (
@@ -208,8 +307,8 @@ const EventsPage = () => {
               {/* Upcoming This Week Section */}
               <section className="events-section">
                 <div className="events-section-header">
-                  <h2 className="events-section-title">Upcoming This Week</h2>
-                  <span className="events-section-label">Nellore & Nearby</span>
+                  <h2 className="events-section-title">{t('UpcomingThisWeek')}</h2>
+                  <span className="events-section-label">{t('NelloreNearby')}</span>
                 </div>
                 <div className="events-upcoming-list">
                   {upcomingEvents.map((event) => (
@@ -236,8 +335,8 @@ const EventsPage = () => {
               {/* Plan Ahead Section */}
               <section className="events-section">
                 <div className="events-section-header">
-                  <h2 className="events-section-title">Plan Ahead</h2>
-                  <span className="events-section-label">Next Month</span>
+                  <h2 className="events-section-title">{t('PlanAhead')}</h2>
+                  <span className="events-section-label">{t('NextMonth')}</span>
                 </div>
                 <div className="events-plan-ahead-grid">
                   {planAheadEvents.map((event) => (
@@ -281,24 +380,33 @@ const EventsPage = () => {
               </section>
 
               {/* Filters Section */}
+              {/* Filters Section */}
               <section className="events-filters-section">
                 <div className="events-filters-header">
-                  <h3 className="events-filters-title">Filters</h3>
-                  <a href="#" className="events-filters-refine">
-                    Refine
-                  </a>
+                  <h3 className="events-filters-title">{t('Filters')}</h3>
+                  <button 
+                    className="events-filters-refine"
+                    onClick={() => {
+                        handleResetFilters();
+                        const topSection = document.querySelector('.events-header');
+                        if (topSection) topSection.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                  >
+                    {t('ClearAll')}
+                  </button>
                 </div>
                 <div className="events-filters-content">
                   <div className="events-filter-group">
-                    <label className="events-filter-label">Category:</label>
+                    <label className="events-filter-label">{t('SelectCategory')}:</label>
                     <div className="events-filter-options">
-                      {filterCategories.map((cat, idx) => (
+                      {uniqueCategories.filter(c => c !== 'All').map((cat, idx) => (
                         <button
                           key={idx}
                           className={`events-filter-option ${
-                            activeFilters.category === cat ? "active" : ""
+                            activeLocalFilters.category === cat ? "active" : ""
                           }`}
-                          onClick={() => handleCategoryFilterChange(cat)}
+                          onClick={() => handleFilterChange('category', activeLocalFilters.category === cat ? 'All' : cat)}
                         >
                           {cat}
                         </button>
@@ -306,15 +414,15 @@ const EventsPage = () => {
                     </div>
                   </div>
                   <div className="events-filter-group">
-                    <label className="events-filter-label">Date:</label>
+                    <label className="events-filter-label">{t('PickDates')}:</label>
                     <div className="events-filter-options">
-                      {filterDates.map((date, idx) => (
+                      {timeOptions.filter(t => t !== 'All').map((date, idx) => (
                         <button
                           key={idx}
                           className={`events-filter-option ${
-                            activeFilters.date === date ? "active" : ""
+                            activeLocalFilters.time === date ? "active" : ""
                           }`}
-                          onClick={() => handleDateFilterChange(date)}
+                          onClick={() => handleFilterChange('time', activeLocalFilters.time === date ? 'All' : date)}
                         >
                           {date}
                         </button>
@@ -322,15 +430,15 @@ const EventsPage = () => {
                     </div>
                   </div>
                   <div className="events-filter-group">
-                    <label className="events-filter-label">Location:</label>
+                    <label className="events-filter-label">{t('Location')}:</label>
                     <div className="events-filter-options">
-                      {filterLocations.map((loc, idx) => (
+                      {uniqueLocations.filter(l => l !== 'All').map((loc, idx) => (
                         <button
                           key={idx}
                           className={`events-filter-option ${
-                            activeFilters.location === loc ? "active" : ""
+                            activeLocalFilters.location === loc ? "active" : ""
                           }`}
-                          onClick={() => handleLocationFilterChange(loc)}
+                          onClick={() => handleFilterChange('location', activeLocalFilters.location === loc ? 'All' : loc)}
                         >
                           {loc}
                         </button>
@@ -339,12 +447,20 @@ const EventsPage = () => {
                   </div>
                 </div>
                 <div className="events-filters-actions">
-                  <button className="events-apply-btn">Apply</button>
+                  <button 
+                    className="events-apply-btn"
+                    onClick={() => {
+                        const topSection = document.querySelector('.events-main-content');
+                        if (topSection) topSection.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    {t('ViewResults')}
+                  </button>
                   <button
                     className="events-reset-btn"
                     onClick={handleResetFilters}
                   >
-                    Reset
+                    {t('Reset')}
                   </button>
                 </div>
               </section>
@@ -354,11 +470,11 @@ const EventsPage = () => {
             <div className="events-sidebar">
               {/* Today in Nellore */}
               <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">Today in Nellore</h3>
+                <h3 className="events-sidebar-title">{t('TodayInNellore')}</h3>
                 <div className="events-today-info">
                   <div className="events-weather-info">
                     <div className="events-info-content">
-                      <span className="events-info-label">Weather:</span>
+                      <span className="events-info-label">{t('Weather')}:</span>
                       <span className="events-info-value">
                         {todayInfo.weather.temperature} -{" "}
                         {todayInfo.weather.condition}
@@ -370,7 +486,7 @@ const EventsPage = () => {
                   </div>
                   <div className="events-traffic-info">
                     <div className="events-info-content">
-                      <span className="events-info-label">Traffic:</span>
+                      <span className="events-info-label">{t('Traffic')}:</span>
                       <span className="events-info-value">
                         {todayInfo.traffic.status}
                       </span>
@@ -384,7 +500,7 @@ const EventsPage = () => {
 
               {/* Top Destinations */}
               <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">Top Destinations</h3>
+                <h3 className="events-sidebar-title">{t('TopDestinations')}</h3>
                 <div className="events-destinations-list">
                   {topDestinations.map((destination) => (
                     <div
@@ -420,7 +536,7 @@ const EventsPage = () => {
 
               {/* Common Ads */}
               <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">Common Ads</h3>
+                <h3 className="events-sidebar-title">{t('CommonAds')}</h3>
                 <div className="events-ads-list">
                   {commonAds.map((ad) => (
                     <div
@@ -445,8 +561,8 @@ const EventsPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

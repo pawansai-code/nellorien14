@@ -1,49 +1,51 @@
 import {
-  FaAddressCard,
-  FaBell,
-  FaBook,
-  FaBriefcase,
-  FaCalendarAlt,
-  FaChartLine,
-  FaHistory,
-  FaHome,
-  FaInfoCircle,
-  FaMapMarkerAlt,
-  FaNewspaper,
-  FaPhone,
-  FaTrophy,
-  FaUtensils,
+    FaAddressCard,
+    FaBell,
+    FaBook,
+    FaBriefcase,
+    FaCalendarAlt,
+    FaChartLine,
+    FaHistory,
+    FaHome,
+    FaInfoCircle,
+    FaMapMarkerAlt,
+    FaNewspaper,
+    FaPhone,
+    FaTrophy,
+    FaUtensils,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import useTranslation from "../../hooks/useTranslation";
 import "./Navigation.css";
 
 const Navigation = ({ includeSearch = false }) => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   const navItems = [
-    { icon: FaHome, label: "Home", path: "/" },
-    { icon: FaBriefcase, label: "Jobs", path: "/jobs" },
-    { icon: FaNewspaper, label: "News", path: "/news" },
-    { icon: FaInfoCircle, label: "Updates Info", path: "/updates" },
-    { icon: FaTrophy, label: "Results", path: "/results" },
-    { icon: FaBell, label: "Notifications", path: "/notifications" },
-    { icon: FaChartLine, label: "Sports", path: "/sports" },
-    { icon: FaUtensils, label: "Famous food", path: "/famousfood" },
-    { icon: FaHistory, label: "Nellore History", path: "/history" },
-    { icon: FaMapMarkerAlt, label: "Famous Stay", path: "/famousstay" },
-    { icon: FaCalendarAlt, label: "Events", path: "/events" },
-    { icon: FaBook, label: "Articles", path: "/articles" },
-    { icon: FaAddressCard, label: "Contact Us", path: "/contact" },
+    { icon: FaHome, label: t("Home"), path: "/" },
+    { icon: FaBriefcase, label: t("Jobs"), path: "/jobs" },
+    { icon: FaNewspaper, label: t("News"), path: "/news" },
+    { icon: FaInfoCircle, label: t("UpdatesInfo"), path: "/updates" },
+    { icon: FaTrophy, label: t("Results"), path: "/results" },
+    { icon: FaBell, label: t("Notifications"), path: "/notifications" },
+    { icon: FaChartLine, label: t("Sports"), path: "/sports" },
+    { icon: FaUtensils, label: t("FamousFood"), path: "/famousfood" },
+    { icon: FaHistory, label: t("NelloreHistory"), path: "/history" },
+    { icon: FaMapMarkerAlt, label: t("FamousStay"), path: "/famousstay" },
+    { icon: FaCalendarAlt, label: t("Events"), path: "/events" },
+    { icon: FaBook, label: t("Articles"), path: "/articles" },
+    { icon: FaAddressCard, label: t("ContactUs"), path: "/contact" },
   ];
 
   const hubNavItems = [
-    { icon: FaHome, label: "Home", path: "/HomePage" },
-    { icon: FaBriefcase, label: "Jobs", path: "/hub/jobs" },
-    { icon: FaNewspaper, label: "News", path: "/hub/news" },
-    { icon: FaInfoCircle, label: "Updates", path: "/hub/updates" },
-    { icon: FaTrophy, label: "Events", path: "/hub/events" },
-    { icon: FaChartLine, label: "Sports", path: "/hub/sports" },
-    { icon: FaPhone, label: "Contact Us", path: "/hub/contact" },
+    { icon: FaHome, label: t("Home"), path: "/HomePage" },
+    { icon: FaBriefcase, label: t("Jobs"), path: "/hub/jobs" },
+    { icon: FaNewspaper, label: t("News"), path: "/hub/news" },
+    { icon: FaInfoCircle, label: t("UpdatesInfo"), path: "/hub/updates" },
+    { icon: FaTrophy, label: t("Events"), path: "/hub/events" },
+    { icon: FaChartLine, label: t("Sports"), path: "/hub/sports" },
+    { icon: FaPhone, label: t("ContactUs"), path: "/hub/contact" },
   ];
 
   const isHubPage = location.pathname.startsWith("/hub");
@@ -76,7 +78,7 @@ const Navigation = ({ includeSearch = false }) => {
             <div className="nav-search">
               <input
                 type="text"
-                placeholder="Search jobs, news, destinations..."
+                placeholder={t("SearchPlaceholder")}
                 className="search-input"
               />
             </div>

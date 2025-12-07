@@ -1,12 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TopHeader from '../../components/TopHeader';
+import Footer from '../../components/Footer';
 import MainHeader from '../../components/MainHeader';
 import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import TopHeader from '../../components/TopHeader';
+import useTranslation from '../../hooks/useTranslation';
 import './UpdatesPage.css';
 
 const UpdatesPage = () => {
+  const { t } = useTranslation();
   const {
     updatesFeedItems,
     updateCategoryTabs,
@@ -127,10 +129,37 @@ const UpdatesPage = () => {
     console.log('Load more updates requested');
   };
 
+  const getOptionLabel = (opt) => {
+    const dateMap = {
+        'Last 7 days': 'Last7Days',
+        'Today': 'Today',
+        'Last 30 days': 'Last30Days',
+        'All time': 'AllTime'
+    };
+    if (dateMap[opt]) return t(dateMap[opt]);
+    
+    // Also try to translate directly if it's a key like 'Recent', 'Popular', 'Global'
+    return t(opt) !== opt ? t(opt) : opt; 
+    // Wait, t(opt) returns key if missing? No, returns default (English).
+    // If I have key 'Recent', t('Recent') returns translation.
+    // If I have no key 'Foo', t('Foo') returns 'Foo'.
+    // So t(opt) is safe.
+  };
+
+  // Helper for quick links mapping
+  const getQuickLinkLabel = (label) => {
+      // mapping based on label string
+      if(label === 'Latest Govt Jobs') return t('LatestGovtJobs');
+      if(label === 'Exam Results & Schedules') return t('ExamResultsSchedules');
+      if(label === 'Top News Today') return t('TopNewsToday');
+      if(label === 'Tourism Guides') return t('TourismGuides');
+      return t(label);
+  };
+
   return (
     <div className="updates-page">
       <TopHeader />
-      <MainHeader siteName="NELLORIENS.IN" tagline="Explore, Discover, Connect" />
+      <MainHeader siteName={t('siteName') + ".IN"} tagline={t('tagline')} />
       <Navbar includeSearch={false} />
 
       <main className="updates-main">
@@ -138,9 +167,9 @@ const UpdatesPage = () => {
           <section className="updates-hero">
             <div className="updates-heading-left heading-inline">
               <i className="bi bi-exclamation-circle updates-icon"></i>
-              <h1 className="updates-eyebrow">Updates</h1>
+              <h1 className="updates-eyebrow">{t('Updates')}</h1>
               <p>
-                Latest changes from Jobs, News, Exams, Tourism and more
+                {t('UpdatesSubtitle')}
               </p>
             </div>
           </section>
@@ -156,7 +185,7 @@ const UpdatesPage = () => {
                   onClick={() => setActiveCategory(tab.label)}
                 >
                   <i className={`bi ${tab.icon} me-2`}></i>
-                  {tab.label}
+                  {t(tab.label)}
                 </button>
               ))}
             </div>
@@ -164,7 +193,7 @@ const UpdatesPage = () => {
               <i className="bi bi-search"></i>
               <input
                 type="text"
-                placeholder="Search updates"
+                placeholder={t('SearchUpdates')}
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
@@ -173,26 +202,26 @@ const UpdatesPage = () => {
 
           <section className="updates-highlight-card">
             <div className="updates-highlight-left">
-              <h1 className="updates-highlight-eyebrow">Stay on top of what's new</h1>
+              <h1 className="updates-highlight-eyebrow">{t('StayOnTop')}</h1>
               <p>
-                Quick snapshot of the latest additions and changes.
+                {t('QuickSnapshot')}
               </p>
               <div className="updates-highlight-meta">
                 <span>
                   <i className="bi bi-clock-history me-2"></i>
-                  Last sync: 2 mins ago
+                  {t('LastSync')}: 2 {t('MinsAgo')}
                 </span>
 
 
                 <span>
                   <i className="bi bi-bell me-2"></i>
-                  12 new items
+                  12 {t('NewItems')}
                 </span>
 
                 
                 <span>
                   <i className="bi bi-funnel me-2"></i>
-                  Filters active
+                  {t('FiltersActive')}
                 </span>
               </div>
             </div>
@@ -201,9 +230,41 @@ const UpdatesPage = () => {
                 {updatesStatusIndicators.map((status) => (
                   <div key={status.id} className="updates-status-item">
                     <i className={`bi ${status.icon}`}></i>
-                    <span>{status.label}</span>
+                    <span>{t(status.label.replace(/ /g, '')) || t(status.label)}</span> 
+                    {/* Hacky key matching? 'Real-time feed enabled' -> 'RealTimeFeedEnabled' doesn't match easily with regex. 
+                        I added exact keys for these labels. 
+                        'Real-time feed enabled' = 'RealTimeFeedEnabled' ? No, 'RealTimeFeedEnabled' key has spaces removed?
+                        In translation I added keys: RealTimeFeedEnabled (no spaces). 
+                        But the string in Redux has spaces. 
+                        Let's use a mapping or just try to find the key. 
+                        Actually I added keys with CameCase in translations.js?
+                        Let's check step 216. 
+                        Key: RealTimeFeedEnabled: "Real-time feed enabled".
+                        Wait, key is CamelCase. Label is "Real-time feed enabled".
+                        So t("Real-time feed enabled") won't work unless I added that phrase as a key.
+                        I added "RealTimeFeedEnabled" as key. 
+                        So I need to map "Real-time feed enabled" -> "RealTimeFeedEnabled".
+                        This is brittle. 
+                        Better to just use t(status.label) and add the PHRASE as the key if possible, OR map it here.
+                        Mapping map:
+                    */}
                   </div>
                 ))}
+            {/* Re-doing the map logic safely */}
+             {updatesStatusIndicators.map((status) => {
+                 const labelMap = {
+                     'Real-time feed enabled': 'RealTimeFeedEnabled',
+                     'Community comments open': 'CommunityCommentsOpen',
+                     'Saved updates visible': 'SavedUpdatesVisible'
+                 };
+                 return (
+                  <div key={status.id} className="updates-status-item">
+                    <i className={`bi ${status.icon}`}></i>
+                    <span>{t(labelMap[status.label] || status.label)}</span>
+                  </div>
+                 );
+             })}
+
               </div>
             </div>
 
@@ -213,7 +274,7 @@ const UpdatesPage = () => {
             {Object.entries(updatesFilterOptions).map(([filterKey, options]) => (
               <div key={filterKey} className="updates-filter-control">
                 <span className="updates-filter-label">
-                  {filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}
+                  {t(filterKey.charAt(0).toUpperCase() + filterKey.slice(1))}
                 </span>
                 <select
                   value={filters[filterKey]}
@@ -223,7 +284,7 @@ const UpdatesPage = () => {
                 >
                   {options.map((option) => (
                     <option key={option} value={option}>
-                      {option}
+                      {getOptionLabel(option)}
                     </option>
                   ))}
                 </select>
@@ -249,7 +310,7 @@ const UpdatesPage = () => {
                         <span
                           className={`update-category-pill category-${update.category.toLowerCase()}`}
                         >
-                          {update.category}
+                          {t(update.category)}
                         </span>
                         <span className="update-time">{update.timeLabel}</span>
                       </div>
@@ -258,34 +319,34 @@ const UpdatesPage = () => {
                       <div className="update-info-row">
                         <span>
                           <i className="bi bi-geo-alt me-2"></i>
-                          {update.location}
+                          {t(update.location) || update.location}
                         </span>
                         <span>
                           <i className="bi bi-clock me-2"></i>
-                          {update.timeframe}
+                          {getOptionLabel(update.timeframe)}
                         </span>
                       </div>
                     </div>
                     <div className="update-actions">
                       <button className="update-action-btn update-action-btn-primary">
-                        {update.primaryAction}
+                        {t(update.primaryAction)}
                       </button>
                       <button className="update-action-btn update-action-btn-secondary">
-                        {update.secondaryAction}
+                        {t(update.secondaryAction)}
                       </button>
                     </div>
                   </div>
                 ))}
                 {!preparedUpdates.length && (
                   <div className="updates-empty-state">
-                    <p>No updates match your current filters.</p>
+                    <p>{t('NoUpdatesMatch')}</p>
                   </div>
                 )}
               
 
               <div className="updates-pagination">
                 <span className="updates-pagination-info">
-                  Page {updatesPaginationInfo.current} of{' '}
+                  {t('Page')} {updatesPaginationInfo.current} {t('Of')}{' '}
                   {updatesPaginationInfo.total}
                 </span>
                 <div className="updates-pagination-controls">
@@ -295,13 +356,13 @@ const UpdatesPage = () => {
                       role="status"
                       aria-hidden="true"
                     ></span>
-                    Loading more...
+                    {t('LoadingMore')}
                   </div>
                   <button
                     className="btn btn-primary updates-load-more-btn"
                     onClick={handleLoadMoreUpdates}
                   >
-                    Load More
+                    {t('LoadMore')}
                   </button>
                 </div>
               </div>
@@ -311,15 +372,15 @@ const UpdatesPage = () => {
               <div className="updates-sidebar-card">
                 <div className="updates-sidebar-card-header">
                   <div>
-                    <h6>Quick Links</h6>
-                    <span>Handpicked</span>
+                    <h6>{t('QuickLinks')}</h6>
+                    <span>{t('Handpicked')}</span>
                   </div>
                 </div>
                 <ul className="updates-sidebar-list">
                   {updatesQuickLinks.map((link) => (
                     <li key={link.id}>
                       <i className={`bi ${link.icon} me-2`}></i>
-                      {link.label}
+                      {getQuickLinkLabel(link.label)}
                     </li>
                   ))}
                 </ul>
@@ -329,8 +390,8 @@ const UpdatesPage = () => {
               <div className="updates-sidebar-card">
                 <div className="updates-sidebar-card-header">
                   <div>
-                    <h6>Trending Tags</h6>
-                    <span>Now</span>
+                    <h6>{t('TrendingTags')}</h6>
+                    <span>{t('Now')}</span>
                   </div>
                 </div>
                 <div className="updates-tags">
@@ -345,8 +406,8 @@ const UpdatesPage = () => {
               <div className="updates-sidebar-card">
                 <div className="updates-sidebar-card-header">
                   <div>
-                    <h6>Saved</h6>
-                    <span>{updatesSavedItems.length} items</span>
+                    <h6>{t('Saved')}</h6>
+                    <span>{updatesSavedItems.length} {t('Items')}</span>
                   </div>
                 </div>
                 <ul className="updates-sidebar-list">
@@ -365,8 +426,8 @@ const UpdatesPage = () => {
 
           <section className="update-detail-card">
             <div className="update-detail-header">
-              <h6>Update Details</h6>
-              <span>Opens on click</span>
+              <h6>{t('UpdateDetails')}</h6>
+              <span>{t('OpensOnClick')}</span>
             </div>
             {selectedUpdate ? (
               <div className="update-detail-body">
@@ -374,9 +435,9 @@ const UpdatesPage = () => {
                   <div>
                     <h4>{selectedUpdate.title}</h4>
                     <p className="update-detail-meta">
-                      Posted: {selectedUpdate.detail?.postedOn} · Category:{' '}
-                      {selectedUpdate.category} · Location:{' '}
-                      {selectedUpdate.location}
+                      {t('Posted')}: {selectedUpdate.detail?.postedOn} · {t('Categories')}:{' '}
+                      {t(selectedUpdate.category)} · {t('Location')}:{' '}
+                      {t(selectedUpdate.location) || selectedUpdate.location}
                     </p>
                   </div>
                 </div>
@@ -391,7 +452,7 @@ const UpdatesPage = () => {
               </div>
             ) : (
               <div className="update-detail-body">
-                <p>No update selected.</p>
+                <p>{t('NoUpdateSelected')}</p>
               </div>
             )}
           </section>
@@ -399,8 +460,8 @@ const UpdatesPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

@@ -22,11 +22,10 @@
 .news-page-title {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
 
 .news-page-title-icon {
-    width: 56px;
+    width: 36px;
     height: 56px;
     /* border-radius: 50px; */
     /*background: linear-gradient(135deg, #4f46e5, #2563eb);*/
@@ -1019,3 +1018,5 @@
             padding: 0.35rem 1.2rem;
             border: none;
         }
+    }
+}

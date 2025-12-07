@@ -1,16 +1,18 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CommonPageLayout from "../../components/CommonPageLayout";
+import useTranslation from "../../hooks/useTranslation";
 import {
-  setNotificationsLoading,
-  setNotificationsPage,
+    setNotificationsLoading,
+    setNotificationsPage,
 } from "../../state/slices/notificationSlice";
 import "./NotificationPage.css";
 
 const NotificationPage = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const {
     notificationsList,
     notificationsFilters,
@@ -106,17 +108,15 @@ const NotificationPage = () => {
   const findSectionLeft = (
     <>
       <h2 className="notification-find-title">
-        Find your notification quickly
+        {t('FindNotificationQuickly')}
       </h2>
       <p className="notification-find-instructions">
-        Use filters below to jump to your category, board and session. Get
-        instant alerts for important notifications or search by notification ID.
+        {t('NotificationInstructions')}
       </p>
       <div className="notification-alert-box">
         <i className="bi bi-exclamation-triangle"></i>
         <span>
-          Important notifications are updated regularly. Enable alerts to stay
-          notified.
+          {t('EnableAlerts')}
         </span>
       </div>
     </>
@@ -127,14 +127,14 @@ const NotificationPage = () => {
     <div className="notification-quick-actions-panel">
   
       {/* Title */}
-      <h4 className="notification-sidebar-title">Quick Subscriptions</h4>
+      <h4 className="notification-sidebar-title">{t('QuickSubscriptions')}</h4>
   
       {/* Email Input */}
       <div className="notification-input-wrapper">
         <i className="bi bi-envelope"></i>
         <input
           type="text"
-          placeholder="Enter email for alerts"
+          placeholder={t('EnterEmail')}
           value={notificationEmail}
           onChange={(e) => setNotificationEmail(e.target.value)}
           className="notification-input"
@@ -146,7 +146,7 @@ const NotificationPage = () => {
         <i className="bi bi-telephone"></i>
         <input
           type="text"
-          placeholder="Enter mobile for SMS"
+          placeholder={t('EnterMobile')}
           value={notificationMobile}
           onChange={(e) => setNotificationMobile(e.target.value)}
           className="notification-input"
@@ -159,7 +159,7 @@ const NotificationPage = () => {
         onClick={handleSubscribe}
       >
         <i className="bi bi-bell-plus me-2"></i>
-        Subscribe
+        {t('Subscribe')}
       </button>
   
       {/* Manage Topics */}
@@ -168,7 +168,7 @@ const NotificationPage = () => {
         onClick={handleManageTopics}
       >
         <i className="bi bi-sliders me-2"></i>
-        Manage Topics
+        {t('ManageTopics')}
       </button>
   
     </div>
@@ -208,7 +208,7 @@ const NotificationPage = () => {
                   }`}
                   onClick={() => handleNotificationAction(notification, action)}
                 >
-                  {action}
+                  {t(action) || action}
                 </button>
               ))}
             </div>
@@ -224,16 +224,16 @@ const NotificationPage = () => {
       {/* Notification Tools Section */}
       <div className="notification-sidebar-section">
         <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">Notification Tools</h4>
+          <h4 className="notification-sidebar-title">{t('NotificationTools')}</h4>
           <a href="#" className="notification-sidebar-link">
-            Tools
+            {t('Tools')}
           </a>
         </div>
         <div className="notification-tools-list">
           {notificationTools.map((tool) => (
             <div key={tool.id} className="notification-tool-item">
               <i className={`bi ${tool.icon}`}></i>
-              <span>{tool.label}</span>
+              <span>{t(tool.label) || tool.label}</span>
             </div>
           ))}
         </div>
@@ -242,16 +242,16 @@ const NotificationPage = () => {
       {/* Important Links Section */}
       <div className="notification-sidebar-section">
         <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">Important Links</h4>
+          <h4 className="notification-sidebar-title">{t('ImportantLinks')}</h4>
           <a href="#" className="notification-sidebar-link">
-            Links
+            {t('Links')}
           </a>
         </div>
         <div className="notification-links-list">
           {importantNotificationLinks.map((link) => (
             <a key={link.id} href={link.url} className="notification-link-item">
               <i className="bi bi-box-arrow-up-right"></i>
-              <span>{link.label}</span>
+              <span>{t(link.label) || link.label}</span>
             </a>
           ))}
         </div>
@@ -260,9 +260,9 @@ const NotificationPage = () => {
       {/* Recently Opened Section */}
       <div className="notification-sidebar-section">
         <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">Recently Opened</h4>
+          <h4 className="notification-sidebar-title">{t('RecentlyOpened')}</h4>
           <a href="#" className="notification-sidebar-link">
-            You
+            {t('You')}
           </a>
         </div>
         <div className="notification-recent-list">
@@ -281,12 +281,12 @@ const NotificationPage = () => {
   const pagination = (
     <>
       <span className="notification-pagination-status">
-        Page {notificationsPage.currentPage} of {notificationsPage.totalPages}
+        {t('Page')} {notificationsPage.currentPage} {t('Of')} {notificationsPage.totalPages}
       </span>
       <div className="notification-pagination-controls">
         {notificationsPage.isLoading ? (
           <>
-            <span className="notification-loading-text">Loading more...</span>
+            <span className="notification-loading-text">{t('LoadingMore')}</span>
             <span
               className="spinner-border spinner-border-sm ms-2"
               role="status"
@@ -295,7 +295,7 @@ const NotificationPage = () => {
           </>
         ) : (
           <>
-            <span className="notification-loading-text">Loading more...</span>
+            <span className="notification-loading-text">{t('LoadingMore')}</span>
             <button
               className="notification-load-more-btn"
               onClick={handleLoadMore}
@@ -304,32 +304,37 @@ const NotificationPage = () => {
               }
             >
               <i className="bi bi-arrow-repeat me-2"></i>
-              Load More
+              {t('LoadMore')}
             </button>
           </>
         )}
       </div>
     </>
   );
+  
+  const localizedFilters = notificationsFilters.map(f => ({
+      ...f,
+      label: t(f.label) || f.label
+  }));
 
   return (
     <CommonPageLayout
-      pageTitle="Notifications"
+      pageTitle={t('Notifications')}
       pageIcon="bi bi-bell"
-      pageSubtitle="Stay updated with latest notifications and alerts."
-      filterTabs={notificationsFilters}
+      pageSubtitle={t('NotificationsSubtitle')}
+      filterTabs={localizedFilters}
       activeFilter={activeFilter}
       onFilterChange={handleFilterChange}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
-      searchPlaceholder="Search notifications, category, board..."
+      searchPlaceholder={t('SearchNotifications')}
       includeSearch={true}
       findSectionLeft={findSectionLeft}
       findSectionRight={findSectionRight}
       mainContent={mainContent}
       sidebarContent={sidebarContent}
       pagination={pagination}
-      footerTagline="Your trusted gateway to important updates."
+      footerTagline={t('NotificationFooterTagline')}
       includeNavbarSearch={false}
     />
   );

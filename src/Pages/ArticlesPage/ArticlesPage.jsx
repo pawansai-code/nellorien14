@@ -6,9 +6,11 @@ import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import useTranslation from "../../hooks/useTranslation";
 import "./ArticlesPage.css";
 
 const ArticlesPage = () => {
+  const { t } = useTranslation();
   const { currentArticle, relatedArticles } = useSelector(
     (state) => state.articles
   );
@@ -25,8 +27,8 @@ const ArticlesPage = () => {
     <div className="articles-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -39,7 +41,7 @@ const ArticlesPage = () => {
                 {index > 0 && (
                   <span className="articles-breadcrumb-separator"> &gt; </span>
                 )}
-                <span className="articles-breadcrumb-item">{crumb}</span>
+                <span className="articles-breadcrumb-item">{t(crumb) || crumb}</span>
               </React.Fragment>
             ))}
           </nav>
@@ -52,7 +54,7 @@ const ArticlesPage = () => {
               <header className="articles-header">
                 <h1 className="articles-title">{currentArticle.title}</h1>
                 <div className="articles-meta">
-                  <span className="articles-tag">{currentArticle.tag}</span>
+                  <span className="articles-tag">{t(currentArticle.tag) || currentArticle.tag}</span>
                   <span className="articles-posted">
                     {currentArticle.posted}
                   </span>
@@ -82,19 +84,19 @@ const ArticlesPage = () => {
                 <div className="articles-medal-tally">
                   <div className="articles-medal-tally-header">
                     <i className="bi bi-award"></i>
-                    <span>Medal Tally (Athletics):</span>
+                    <span>{t('MedalTally')} ({t('Athletics')}):</span>
                   </div>
                   <div className="articles-medal-tally-content">
                     <span className="articles-medal-gold">
-                      Gold {currentArticle.medalTally.gold}
+                      {t('Gold')} {currentArticle.medalTally.gold}
                     </span>
                     <span className="articles-medal-separator"> · </span>
                     <span className="articles-medal-silver">
-                      Silver {currentArticle.medalTally.silver}
+                      {t('Silver')} {currentArticle.medalTally.silver}
                     </span>
                     <span className="articles-medal-separator"> · </span>
                     <span className="articles-medal-bronze">
-                      Bronze {currentArticle.medalTally.bronze}
+                      {t('Bronze')} {currentArticle.medalTally.bronze}
                     </span>
                   </div>
                 </div>
@@ -106,21 +108,21 @@ const ArticlesPage = () => {
                     onClick={() => handleArticleAction("Share")}
                   >
                     <i className="bi bi-share"></i>
-                    Share
+                    {t('Share')}
                   </button>
                   <button
                     className="articles-action-btn"
                     onClick={() => handleArticleAction("Save")}
                   >
                     <i className="bi bi-bookmark"></i>
-                    Save
+                    {t('Save')}
                   </button>
                   <button
                     className="articles-action-btn"
                     onClick={() => handleArticleAction("Comment")}
                   >
                     <i className="bi bi-chat-left"></i>
-                    Comment
+                    {t('Comment')}
                   </button>
                 </div>
               </article>
@@ -129,7 +131,7 @@ const ArticlesPage = () => {
             {/* Sidebar - Right Column */}
             <aside className="articles-sidebar">
               <section className="articles-sidebar-section">
-                <h3 className="articles-sidebar-title">Related Sports News</h3>
+                <h3 className="articles-sidebar-title">{t('RelatedSportsNews')}</h3>
                 <div className="articles-related-list">
                   {relatedArticles.map((article) => (
                     <div
@@ -149,7 +151,7 @@ const ArticlesPage = () => {
                             {article.posted}
                           </span>
                           <span className="articles-related-tag">
-                            {article.tag}
+                            {t(article.tag) || article.tag}
                           </span>
                         </div>
                       </div>
@@ -163,8 +165,8 @@ const ArticlesPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

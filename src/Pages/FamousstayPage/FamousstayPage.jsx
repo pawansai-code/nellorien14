@@ -1,18 +1,20 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import useTranslation from '../../hooks/useTranslation';
 import { updateFilters } from "../../state/slices/famousStaysSlice";
 import "./FamousstayPage.css";
 
 const FamousstayPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const {
     topPicks = [],
@@ -26,6 +28,48 @@ const FamousstayPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showPriceFilter, setShowPriceFilter] = useState(false);
   const [activeNearbyFilter, setActiveNearbyFilter] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({
+    price: 'All',
+    rating: 'All',
+    location: 'All'
+  });
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRef = useRef(null);
+
+  // Extract unique locations from stays
+  const uniqueLocations = useMemo(() => {
+    // Extract unique locations. Assuming stay.location is a string.
+    const locs = new Set(topPicks.map(stay => stay.location));
+    return ['All', ...Array.from(locs)];
+  }, [topPicks]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
+
+  const toggleDropdown = (type) => {
+    setOpenDropdown(openDropdown === type ? null : type);
+  };
+
+  const handleLocalFilterChange = (type, value) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      [type]: value
+    }));
+    setOpenDropdown(null);
+  };
 
   // Filter logic
   const filteredStays = useMemo(() => {
@@ -42,9 +86,36 @@ const FamousstayPage = () => {
       );
     }
 
-    // Rating filter
+    // Rating filter (Redux)
     if (reduxFilters.rating === "4.0+") {
       filtered = filtered.filter((stay) => stay.rating >= 4.0);
+    }
+
+    // New Filter Logic from Top Dropdowns
+    
+    // Price Filter
+    if (activeFilters.price !== 'All') {
+      if (activeFilters.price === '< ₹2000') {
+        filtered = filtered.filter(stay => stay.price < 2000);
+      } else if (activeFilters.price === '₹2000 - ₹5000') {
+        filtered = filtered.filter(stay => stay.price >= 2000 && stay.price <= 5000);
+      } else if (activeFilters.price === '> ₹5000') {
+        filtered = filtered.filter(stay => stay.price > 5000);
+      }
+    }
+
+    // Rating Filter (Dropdown)
+    if (activeFilters.rating !== 'All') {
+      if (activeFilters.rating === '4.0+') {
+        filtered = filtered.filter(stay => stay.rating >= 4.0);
+      } else if (activeFilters.rating === '4.5+') {
+        filtered = filtered.filter(stay => stay.rating >= 4.5);
+      }
+    }
+
+    // Location Filter
+    if (activeFilters.location !== 'All') {
+      filtered = filtered.filter(stay => stay.location === activeFilters.location);
     }
 
     // WiFi filter
@@ -69,7 +140,7 @@ const FamousstayPage = () => {
     }
 
     return filtered;
-  }, [topPicks, searchTerm, reduxFilters]);
+  }, [topPicks, searchTerm, reduxFilters, activeFilters]);
 
   const handleFilterToggle = (filterKey) => {
     if (filterKey === "rating") {
@@ -105,15 +176,18 @@ const FamousstayPage = () => {
 
   const handleViewCityMap = () => {
     console.log("View city map clicked");
-    // Navigate to map view or open map modal
+    const mapSection = document.querySelector('.famousstay-map-section');
+    if (mapSection) {
+      mapSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
     <div className="famousstay-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -122,26 +196,94 @@ const FamousstayPage = () => {
         <section className="famousstay-hero">
           <div className="famousstay-hero-banner">
             <div className="famousstay-hero-content">
-              <h1 className="famousstay-hero-title">Famous Stays in Nellore</h1>
+              <h1 className="famousstay-hero-title">{t('FamousStaysInNellore')}</h1>
               <p className="famousstay-hero-subtitle">
-                Curated hotels, heritage stays, and budget picks—close to food
-                streets and historic landmarks.
+                {t('StaysSubtitle')}
               </p>
 
-              <div className="famousstay-search-controls">
+              <div className="famousstay-search-controls" ref={dropdownRef}>
                 <div className="famousstay-search-bar">
                   <i className="bi bi-search"></i>
                   <input
                     type="text"
-                    placeholder="Search hotel, area, landmark."
+                    placeholder={t('SearchHotel')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <button className="famousstay-filter-btn">
-                  <i className="bi bi-funnel"></i>
-                  Price - Rating - Near
-                </button>
+                
+                {/* Price Filter */}
+                <div className="filter-wrapper">
+                  <button 
+                    className={`famousstay-filter-btn ${activeFilters.price !== 'All' || openDropdown === 'price' ? 'active' : ''}`}
+                    onClick={() => toggleDropdown('price')}
+                  >
+                    <i className="bi bi-tag"></i>
+                    {activeFilters.price === 'All' ? 'Price' : activeFilters.price}
+                  </button>
+                  {openDropdown === 'price' && (
+                    <div className="filter-dropdown">
+                      {['All', '< ₹2000', '₹2000 - ₹5000', '> ₹5000'].map(price => (
+                        <button 
+                          key={price}
+                          className={activeFilters.price === price ? 'selected' : ''}
+                          onClick={() => handleLocalFilterChange('price', price)}
+                        >
+                          {price}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Rating Filter */}
+                <div className="filter-wrapper">
+                  <button 
+                    className={`famousstay-filter-btn ${activeFilters.rating !== 'All' || openDropdown === 'rating' ? 'active' : ''}`}
+                    onClick={() => toggleDropdown('rating')}
+                  >
+                    <i className="bi bi-star"></i>
+                    {activeFilters.rating === 'All' ? 'Rating' : activeFilters.rating}
+                  </button>
+                  {openDropdown === 'rating' && (
+                    <div className="filter-dropdown">
+                      {['All', '4.0+', '4.5+'].map(rating => (
+                        <button 
+                          key={rating}
+                          className={activeFilters.rating === rating ? 'selected' : ''}
+                          onClick={() => handleLocalFilterChange('rating', rating)}
+                        >
+                          {rating}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Location Filter */}
+                <div className="filter-wrapper">
+                  <button 
+                    className={`famousstay-filter-btn ${activeFilters.location !== 'All' || openDropdown === 'location' ? 'active' : ''}`}
+                    onClick={() => toggleDropdown('location')}
+                  >
+                    <i className="bi bi-geo-alt"></i>
+                    {activeFilters.location === 'All' ? t('Location') : activeFilters.location}
+                  </button>
+                  {openDropdown === 'location' && (
+                    <div className="filter-dropdown">
+                      {uniqueLocations.map(loc => (
+                        <button 
+                          key={loc}
+                          className={activeFilters.location === loc ? 'selected' : ''}
+                          onClick={() => handleLocalFilterChange('location', loc)}
+                        >
+                          {loc}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <button
                   className="famousstay-map-btn"
                   onClick={handleViewCityMap}
@@ -161,9 +303,9 @@ const FamousstayPage = () => {
               <section className="famousstay-top-picks">
                 <div className="famousstay-section-header">
                   <div>
-                    <h2 className="famousstay-section-title">Top Picks</h2>
+                    <h2 className="famousstay-section-title">{t('TopPicks')}</h2>
                     <span className="famousstay-editor-label">
-                      Editor's choice
+                      {t('EditorsChoice')}
                     </span>
                   </div>
                 </div>
@@ -175,7 +317,7 @@ const FamousstayPage = () => {
                         <img src={stay.image} alt={stay.name} />
                         {stay.isEditorChoice && (
                           <span className="famousstay-editor-badge">
-                            Editor's choice
+                            {t('EditorsChoice')}
                           </span>
                         )}
                       </div>
@@ -209,10 +351,10 @@ const FamousstayPage = () => {
                                 idx === 0
                                   ? "famousstay-action-primary"
                                   : "famousstay-action-secondary"
-                              }`}
+                                }`}
                               onClick={() => handleStayAction(stay, action)}
                             >
-                              {action}
+                              {t(action.replace(/\s/g, '')) || action}
                             </button>
                           ))}
                         </div>
@@ -225,8 +367,8 @@ const FamousstayPage = () => {
               {/* Map & Nearby Section */}
               <section className="famousstay-map-section">
                 <div className="famousstay-section-header">
-                  <h2 className="famousstay-section-title">Map & Nearby</h2>
-                  <button className="famousstay-explore-btn">Explore</button>
+                  <h2 className="famousstay-section-title">{t('MapNearby')}</h2>
+                  <button className="famousstay-explore-btn">{t('Explore')}</button>
                 </div>
                 <div className="famousstay-map-container">
                   <div className="famousstay-map-placeholder">
@@ -236,7 +378,7 @@ const FamousstayPage = () => {
                 </div>
                 <div className="famousstay-nearby-filters">
                   <span className="famousstay-nearby-label">
-                    Show stays near:
+                    {t('ShowStaysNear')}
                   </span>
                   <div className="famousstay-nearby-buttons">
                     {mapNearbyFilters.map((filter) => (
@@ -255,7 +397,7 @@ const FamousstayPage = () => {
                       </button>
                     ))}
                   </div>
-                  <button className="famousstay-refine-btn">Refine</button>
+                  <button className="famousstay-refine-btn">{t('Refine')}</button>
                 </div>
               </section>
             </div>
@@ -264,7 +406,7 @@ const FamousstayPage = () => {
             <aside className="famousstay-sidebar">
               {/* Quick Filters */}
               <div className="famousstay-sidebar-section">
-                <h4 className="famousstay-sidebar-title">Quick Filters</h4>
+                <h4 className="famousstay-sidebar-title">{t('QuickFilters')}</h4>
                 <div className="famousstay-filters-grid">
                   {quickFilters.map((filter) => (
                     <button
@@ -302,7 +444,7 @@ const FamousstayPage = () => {
               {/* Nearby Famous Foods */}
               <div className="famousstay-sidebar-section">
                 <h4 className="famousstay-sidebar-title">
-                  Nearby Famous Foods
+                  {t('NearbyFamousFoods')}
                 </h4>
                 <div className="famousstay-foods-list">
                   {nearbyFoods.map((food) => (
@@ -332,7 +474,7 @@ const FamousstayPage = () => {
 
               {/* Common Ads */}
               <div className="famousstay-sidebar-section">
-                <h4 className="famousstay-sidebar-title">Common Ads</h4>
+                <h4 className="famousstay-sidebar-title">{t('CommonAds')}</h4>
                 <div className="famousstay-ads-list">
                   {commonAds.map((ad) => (
                     <div
@@ -359,8 +501,8 @@ const FamousstayPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway for updates, alerts & information across Nellore."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

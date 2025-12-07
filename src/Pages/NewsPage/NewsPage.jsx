@@ -7,12 +7,14 @@ import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import useTranslation from "../../hooks/useTranslation";
 import { setNewsLoading, setNewsPage } from "../../state/slices/newsSlice";
 import "./NewsPage.css";
 
 const NewsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     newsFeedArticles,
     newsFeedFilters,
@@ -103,8 +105,8 @@ const NewsPage = () => {
     <div className="news-page">
       <TopHeader />
       <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
+        siteName={t('siteName') + ".IN"}
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -117,14 +119,14 @@ const NewsPage = () => {
                   <i className="bi bi-newspaper"></i>
                 </span>
                 <div>
-                  <h2 className="news-page-heading">News</h2>
+                  <h2 className="news-page-heading">{t('News')}</h2>
                 </div>
               </div>
               <div className="news-page-search">
                 <i className="bi bi-search"></i>
                 <input
                   type="text"
-                  placeholder="Search articles"
+                  placeholder={t('SearchArticles')}
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                 />
@@ -141,7 +143,7 @@ const NewsPage = () => {
                   onClick={() => handleFilterChange(tab.id)}
                 >
                   <i className={`bi ${tab.icon} me-2`}></i>
-                  {tab.label}
+                  {t(tab.label)}
                 </button>
               ))}
             </div>
@@ -157,13 +159,13 @@ const NewsPage = () => {
                         <div className="news-page-card-body">
                           <h3 className="news-page-card-title">{article.title}</h3>
                           <p className="news-page-card-meta">
-                            {article.categoryLabel} · {article.time}
+                            {t(article.categoryLabel)} · {article.time}
                           </p>
                           <button
                             className="news-page-card-btn"
                             onClick={() => handleReadFullArticle(article.id)}
                           >
-                            Read Full Article
+                            {t('ReadFullArticle')}
                           </button>
                         </div>
                       </article>
@@ -171,7 +173,7 @@ const NewsPage = () => {
                     {!filteredArticles.length && (
                       <div className="news-page-empty-state">
                         <i className="bi bi-emoji-neutral"></i>
-                        <p>No news matches your search.</p>
+                        <p>{t('NoNewsMatches')}</p>
                       </div>
                     )}
                   </div>
@@ -180,7 +182,7 @@ const NewsPage = () => {
                   <div className="jobs-pagination-panel">
                     <div className="pagination-controls-group">
                       <span className="pagination-status-chip">
-                        Page {newsPage.currentPage} of {newsPage.totalPages}
+                        {t('Page')} {newsPage.currentPage} {t('Of')} {newsPage.totalPages}
                       </span>
   
                       <div className="pagination-controls">
@@ -200,13 +202,13 @@ const NewsPage = () => {
                           onClick={() => handlePageChange(newsPage.currentPage + 1)}
                           disabled={newsPage.currentPage >= newsPage.totalPages}
                         >
-                          Next
+                          {t('Next')}
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-
+ 
                 
               </div>
 
@@ -216,13 +218,13 @@ const NewsPage = () => {
           <section className="news-featured-section">
             {/* Article Details */}
             <div className="article-details-container">
-              <div className="article-details-label">Article Details</div>
+              <div className="article-details-label">{t('ArticleDetails')}</div>
               <div className="article-details-content">
                 <h2 className="article-details-title">
                   {featuredArticle.title}
                 </h2>
                 <p className="article-details-date">
-                  Published: {featuredArticle.publishedDate}
+                  {t('Published')}: {featuredArticle.publishedDate}
                 </p>
                 <div
                   className="article-details-image-wrapper"
@@ -233,7 +235,7 @@ const NewsPage = () => {
                     alt={featuredArticle.title}
                     className="article-details-image"
                   />
-                  <span className="article-details-hint">Opens on click</span>
+                  <span className="article-details-hint">{t('OpensOnClick')}</span>
                 </div>
                 <p className="article-details-summary">
                   {featuredArticle.summary}
@@ -243,7 +245,7 @@ const NewsPage = () => {
 
             <div className="news-feed-headlines-layout">
               <div className="live-news-feed-container">
-                <h3 className="live-news-feed-title">Live News Feed</h3>
+                <h3 className="live-news-feed-title">{t('LiveNewsFeed')}</h3>
                 <div className="live-news-feed-list">
                   {liveNewsFeed.map((item) => (
                     <div key={item.id} className="live-news-item">
@@ -253,7 +255,7 @@ const NewsPage = () => {
                       <div className="live-news-item-content">
                         <h4 className="live-news-item-title">{item.title}</h4>
                         <p className="live-news-item-meta">
-                          {item.category} • {item.time}
+                          {t(item.category)} • {item.time}
                         </p>
                         <div className="live-news-item-actions">
                           {item.actions.map((action, idx) => (
@@ -264,7 +266,7 @@ const NewsPage = () => {
                                 handleLiveNewsAction(action, item.id)
                               }
                             >
-                              {action}
+                              {t(action)}
                             </button>
                           ))}
                         </div>
@@ -273,13 +275,13 @@ const NewsPage = () => {
                   ))}
                 </div>
                 <div className="live-news-indicator">
-                  Live: {liveNewsCount} new posts
+                  {t('Live')}: {liveNewsCount} {t('NewPosts')}
                 </div>
               </div>
 
               {/* headlines section */}
               <div className="headlines-container">
-                <h3 className="headlines-title">Headlines</h3>
+                <h3 className="headlines-title">{t('Headlines')}</h3>
                 <ul className="headlines-list">
                   {headlines.list.map((headline, idx) => (
                     <li key={idx} className="headlines-list-item">
@@ -296,7 +298,7 @@ const NewsPage = () => {
                       <div className="headlines-item-content">
                         <h4 className="headlines-item-title">{item.title}</h4>
                         <p className="headlines-item-meta">
-                          {item.category} • {item.time}
+                          {t(item.category)} • {item.time}
                         </p>
                       </div>
                     </div>
@@ -314,8 +316,8 @@ const NewsPage = () => {
       </main>
 
       <Footer
-        siteName="NELLORIENS.IN"
-        tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
+        siteName={t('siteName') + ".IN"}
+        tagline={t('FooterTagline')}
       />
     </div>
   );

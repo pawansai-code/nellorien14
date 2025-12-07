@@ -1,9 +1,12 @@
-import { FaGlobe, FaMapMarkerAlt, FaChevronDown } from 'react-icons/fa';
-import { useSelector, useDispatch } from 'react-redux';
-import { setLanguage } from '../../state/slices/appSlice';
-import './MainHeader.css';
+import { FaChevronDown, FaGlobe, FaMapMarkerAlt } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { setLanguage } from "../../state/slices/appSlice";
+import "./MainHeader.css";
 
-  const MainHeader = ({ siteName = 'NELLORIENS.IN', tagline = 'Explore, Discover, Connect' }) => {
+const MainHeader = ({
+  siteName = "NELLORIENS",
+  tagline = "Explore, Discover, Connect",
+}) => {
   const language = useSelector((state) => state.app.language);
   const dispatch = useDispatch();
 
@@ -28,8 +31,8 @@ import './MainHeader.css';
             </div>
           </div>
           <div className="language-selector">
-            <select 
-              value={language} 
+            <select
+              value={language}
               onChange={handleLanguageChange}
               className="language-dropdown"
             >
@@ -40,10 +43,9 @@ import './MainHeader.css';
             <FaChevronDown className="dropdown-arrow" />
           </div>
         </div>
-        </div>
+      </div>
     </div>
   );
 };
 
 export default MainHeader;
-

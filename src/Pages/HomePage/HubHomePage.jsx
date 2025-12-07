@@ -1,14 +1,20 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import useTranslation from '../../hooks/useTranslation';
+import { setLanguage } from "../../state/slices/appSlice";
 import "../../styles/HubHomePage.css";
 
 export function HubHomePage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { language } = useSelector((state) => state.app);
+  const { t } = useTranslation();
 
   const jobs = [
     {
@@ -120,7 +126,7 @@ export function HubHomePage() {
         <div className="container-fluid">
           <div className="d-flex justify-content-between align-items-center py-2">
             <div>
-              <span>Magazines | Blogs | Podcasts</span>
+              <span>{t('MagazinesBlogsPodcasts')}</span>
             </div>
             <div className="d-flex align-items-center gap-3">
               <select
@@ -131,14 +137,16 @@ export function HubHomePage() {
                   border: "1px solid rgba(255,255,255,0.3)",
                   color: "white",
                 }}
+                value={language}
+                onChange={(e) => dispatch(setLanguage(e.target.value))}
               >
-                <option style={{ background: "#0d6efd", color: "white" }}>
+                <option value="English" style={{ background: "#0d6efd", color: "white" }}>
                   English
                 </option>
-                <option style={{ background: "#0d6efd", color: "white" }}>
+                <option value="Telugu" style={{ background: "#0d6efd", color: "white" }}>
                   Telugu
                 </option>
-                <option style={{ background: "#0d6efd", color: "white" }}>
+                <option value="Hindi" style={{ background: "#0d6efd", color: "white" }}>
                   Hindi
                 </option>
               </select>
@@ -151,7 +159,7 @@ export function HubHomePage() {
       <TopHeader />
       <MainHeader
         siteName="NELLOREHUB.IN"
-        tagline="Explore, Discover, Connect"
+        tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
 
@@ -320,7 +328,6 @@ export function HubHomePage() {
             <h2 className="tourism-portal-title">Nellore Tourism Portal</h2>
             <p className="tourism-portal-subtitle">Discover the beauty, culture, and heritage of Nellore</p>
           </div>
-
           {/* Popular Destinations */}
       {/* <div className="tourism-section mb-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -532,7 +539,7 @@ export function HubHomePage() {
 
       <Footer
         siteName="NELLOREHUB.IN"
-        tagline="Your trusted portal for local opportunities and global inspiration."
+        tagline={t('HubFooterTagline')}
       />
     </div>
   );
